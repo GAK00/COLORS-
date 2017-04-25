@@ -25,7 +25,11 @@ public class DrawPanel extends JPanel
 	private double leftOverGreen;
 	private double leftOverBlue;
 	private ShapePanel shapes;
-	private JButton button;
+	private JButton rectButton;
+	private JButton circleButton;
+	private JButton ellipseButton;
+	private JButton triButton;
+	private JButton polyButton;
 	private SpringLayout layout;
 	private Controller baseController;
 	private double LR;
@@ -35,11 +39,15 @@ public class DrawPanel extends JPanel
 super();
 this.baseController = baseController;
 shapes = new ShapePanel(baseController);
-button = new JButton("button");
+rectButton = new JButton("Rect");
+circleButton  =new JButton("Circ");
+ellipseButton = new JButton("Ellip");
+triButton = new JButton("Tri");
+polyButton = new JButton("Poly");
 layout = new SpringLayout();
 current = Color.white;
 currentNumb = 0;
-colorNumb = 120;
+colorNumb = 240;
 NextColor();
 TimerTask colorChange = new TimerTask()
 {
@@ -177,26 +185,68 @@ private int PosNeg()
 private void setup()
 {
 	this.setLayout(layout);
-	this.add(button);
+	this.add(rectButton);
+	this.add(triButton);
+	this.add(circleButton);
+	this.add(ellipseButton);
+	this.add(polyButton);
 	this.add(shapes);
 	}
 private void setupLayout()
 {
 
 layout.putConstraint(SpringLayout.WEST, shapes, 700, SpringLayout.WEST, this);
-layout.putConstraint(SpringLayout.SOUTH, button, 0, SpringLayout.SOUTH, shapes);
-layout.putConstraint(SpringLayout.EAST, button, -15, SpringLayout.WEST, shapes);
 layout.putConstraint(SpringLayout.NORTH, shapes, 0, SpringLayout.NORTH, this);
 layout.putConstraint(SpringLayout.SOUTH, shapes, 0, SpringLayout.SOUTH, this);
 layout.putConstraint(SpringLayout.EAST, shapes, 0, SpringLayout.EAST, this);
+layout.putConstraint(SpringLayout.NORTH, polyButton, 5, SpringLayout.SOUTH, ellipseButton);
+layout.putConstraint(SpringLayout.WEST, polyButton, 0, SpringLayout.WEST, triButton);
+layout.putConstraint(SpringLayout.NORTH, circleButton, 88, SpringLayout.NORTH, this);
+layout.putConstraint(SpringLayout.SOUTH, triButton, -12, SpringLayout.NORTH, circleButton);
+layout.putConstraint(SpringLayout.NORTH, ellipseButton, 16, SpringLayout.SOUTH, circleButton);
+layout.putConstraint(SpringLayout.WEST, ellipseButton, 0, SpringLayout.WEST, triButton);
+layout.putConstraint(SpringLayout.WEST, triButton, 0, SpringLayout.WEST, this);
+layout.putConstraint(SpringLayout.WEST, circleButton, 0, SpringLayout.WEST, triButton);
 }
 private void setupListeners()
 {
-	button.addActionListener(new ActionListener()
+	rectButton.addActionListener(new ActionListener()
 	{
 		public void actionPerformed(ActionEvent e)
 		{
 			shapes.addRectangles();
+		}
+		
+	});
+	triButton.addActionListener(new ActionListener()
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			shapes.addTriangles();
+		}
+		
+	});
+	polyButton.addActionListener(new ActionListener()
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			shapes.addPolygons();
+		}
+		
+	});
+	circleButton.addActionListener(new ActionListener()
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			shapes.addCircles();
+		}
+		
+	});
+	ellipseButton.addActionListener(new ActionListener()
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			shapes.addEllipse();
 		}
 		
 	});
