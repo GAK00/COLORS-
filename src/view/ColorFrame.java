@@ -11,6 +11,7 @@ public class ColorFrame extends JFrame
 	{
 		super();
 		this.setSize(this.getMaximumSize());
+		this.setTitle("Colors");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setContentPane(new DrawPanel(baseController));
 		this.setVisible(true);
