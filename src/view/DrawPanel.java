@@ -248,7 +248,12 @@ public class DrawPanel extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				shapes.makeDankGifFriend();
+				if(!shapes.isCapturing()){
+				shapes.makeDankGifFriend();}
+				else
+				{
+					shapes.stopTheGifFriend();
+				}
 			}
 		});
 		this.addMouseMotionListener(new DrawListener(shapes, 700));
