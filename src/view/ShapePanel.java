@@ -40,6 +40,7 @@ public class ShapePanel extends JPanel {
 	private Color inverted;
 	private int slowDown;
 	private boolean capture;
+	private boolean memClear;
 
 	public ShapePanel(Controller baseController) {
 		super();
@@ -61,6 +62,7 @@ public class ShapePanel extends JPanel {
 		shapes.add(polyList);
 		shapes.add(lineList);
 		capture = false;
+		memClear = false;
 	}
 
 	public void addRectangles() {
@@ -107,8 +109,8 @@ public class ShapePanel extends JPanel {
 	}
 
 	public void addEllipse() {
-		if (circleList.size() > 100) {
-			circleList.clear();
+		if (ellipseList.size() > 100) {
+			ellipseList.clear();
 		}
 		for (int index = 0; index < 30; index++) {
 			int radiusX = (int) (Math.random() * 50) + 20;
@@ -117,7 +119,7 @@ public class ShapePanel extends JPanel {
 			int y = (int) (Math.random() * getHeight() - radiusY);
 			Ellipse2D.Double circle = new Ellipse2D.Double(x, y, radiusX, radiusY);
 			int rand = (int) (Math.random() * 35);
-			circleList.add(new ShapeData(circle, rand % 30 == 0, (int) (Math.random() * 5) + 1));
+			ellipseList.add(new ShapeData(circle, rand % 30 == 0, (int) (Math.random() * 5) + 1));
 		}
 	}
 
@@ -173,16 +175,16 @@ public class ShapePanel extends JPanel {
 	public void drawShapes(List<ShapeData> shapes, Graphics2D drawingGraphics) {
 
 		drawingGraphics.setColor(inverted);
-
+		boolean zero = false;
 		for (int index = 0; index < shapes.size(); index++) {
 			try {
 				ShapeData shape = shapes.get(index);
-				if (slowDown == 70) {
+				if (slowDown >= 40) {
 					int strokeWidth = (int) (Math.random() * 5) + 1;
 					drawingGraphics.setStroke(new BasicStroke(strokeWidth));
 					shape.setStrokeWidth(strokeWidth);
 					int rand = (int) (Math.random() * 35);
-					if (rand % 30 == 0) {
+					if (rand % 7 == 0) {
 						drawingGraphics.setColor(randomizeAlpha(inverted));
 						shape.setAlpha(drawingGraphics.getColor().getAlpha());
 						drawingGraphics.fill(shape.getShape());
@@ -193,7 +195,7 @@ public class ShapePanel extends JPanel {
 						shape.setFilled(false);
 					}
 
-					slowDown = 0;
+					zero = true;
 				}
 
 				else {
@@ -210,7 +212,7 @@ public class ShapePanel extends JPanel {
 						drawingGraphics.draw(shape.getShape());
 					}
 
-					slowDown++;
+					
 				}
 
 			}
@@ -218,11 +220,16 @@ public class ShapePanel extends JPanel {
 			catch (ConcurrentModificationException e) {
 				try {
 					Thread.sleep(1);
-					drawShapes(shapes, drawingGraphics);
+					index--;
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
 			}
+		}
+		slowDown++;
+		if(zero)
+		{
+			slowDown =0;
 		}
 	}
 
@@ -254,11 +261,21 @@ public class ShapePanel extends JPanel {
 		Thread giffy = new Thread() {
 			public void run() {
 				try {
-					JOptionPane.showMessageDialog(null, "Press ok to save while saving don't draw");
-					while (capture) {
-						Thread.sleep(100);
+					JOptionPane.showMessageDialog(null, "Press ok to save");
+					int time;
+					try{
+					time = Integer.parseInt(JOptionPane.showInputDialog(null,"Enter miliSecond capture time"));}
+					catch(Exception e)
+					{
+						time = 500;
+					}
+							while (capture) {
+						Thread.sleep(time)
+						;
+						
 						Thread capture = new Thread() {
 							public void run() {
+								try{
 								BufferedImage image = new BufferedImage(getWidth(), getHeight(),
 										BufferedImage.TYPE_INT_ARGB);
 								Graphics graphic = image.getGraphics();
@@ -266,18 +283,28 @@ public class ShapePanel extends JPanel {
 								graphic.fillRect(0, 0, getWidth(), getHeight());
 								print(graphic);
 								graphic.dispose();
-								framesToSave.add(image);
+								framesToSave.add(image);}
+							catch(java.lang.OutOfMemoryError e)
+							{
+								memClear = true;
+							}
 							}
 
 						};
-						try {
+						if(!memClear) {
 							capture.start();
-						} catch (OutOfMemoryError memError) {
+						} else{
+							System.out.println("MemError");
+							int reqired = framesToSave.size()/2;
+							while(framesToSave.size()>reqired)
+							{
 							try {
 								Thread.sleep(2000);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
+							}
+							memClear = false;
 							capture.start();
 						}
 					}
@@ -295,13 +322,13 @@ public class ShapePanel extends JPanel {
 				ImageOutputStream output;
 				try {
 					output = new FileImageOutputStream(newFile);
-
 					GifSequenceWriter gif = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, 1, true);
 
 					giffy.start();
 					while (giffy.isAlive() || framesToSave.size() > 0) {
 						if (framesToSave.size() > 0) {
 							gif.writeToSequence(framesToSave.remove());
+							System.out.println("Size: " + framesToSave.size());
 						} else {
 							Thread.sleep(200);
 						}
