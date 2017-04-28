@@ -28,7 +28,8 @@ import javax.swing.JPanel;
 
 import controller.Controller;
 
-public class ShapePanel extends JPanel {
+public class ShapePanel extends JPanel
+{
 	private Controller baseController;
 	private List<ShapeData> rectangleList;
 	private List<ShapeData> circleList;
@@ -36,13 +37,15 @@ public class ShapePanel extends JPanel {
 	private List<ShapeData> triangleList;
 	private List<ShapeData> polyList;
 	private List<ShapeData> lineList;
+	private List<GraphPanel> graphs;
 	private List<List<ShapeData>> shapes;
 	private Color inverted;
 	private int slowDown;
 	private boolean capture;
 	private boolean memClear;
 
-	public ShapePanel(Controller baseController) {
+	public ShapePanel(Controller baseController)
+	{
 		super();
 		slowDown = 0;
 		inverted = Color.black;
@@ -53,6 +56,7 @@ public class ShapePanel extends JPanel {
 		this.triangleList = new ArrayList<ShapeData>();
 		this.polyList = new ArrayList<ShapeData>();
 		this.lineList = new ArrayList<ShapeData>();
+		graphs = new ArrayList<GraphPanel>();
 		this.setMinimumSize(new Dimension(100, 500));
 		shapes = new ArrayList<List<ShapeData>>();
 		shapes.add(rectangleList);
@@ -65,15 +69,16 @@ public class ShapePanel extends JPanel {
 		memClear = false;
 	}
 
-	public void addRectangles() {
-		for (int index = 0; index < 30; index++) {
+	public void addRectangles()
+	{
+		for (int index = 0; index < 30; index++)
+		{
 			int width = (int) (Math.random() * 180) + 1;
 			int height = (int) (Math.random() * 180) + 1;
 			int xCorner = (int) (Math.random() * (getWidth() - width));
 			int yCorner = (int) (Math.random() * (getHeight() - height));
 			int rand = (int) (Math.random() * 35);
-			ShapeData currentRectangle = new ShapeData(new Rectangle(xCorner, yCorner, width, height), rand % 30 == 0,
-					(int) (Math.random() * 5) + 1);
+			ShapeData currentRectangle = new ShapeData(new Rectangle(xCorner, yCorner, width, height), rand % 30 == 0, (int) (Math.random() * 5) + 1);
 			currentRectangle.setAlpha(100);
 			rectangleList.add(currentRectangle);
 		}
@@ -81,18 +86,27 @@ public class ShapePanel extends JPanel {
 	}
 
 	@Override
-	protected void paintComponent(Graphics graphics) {
+	protected void paintComponent(Graphics graphics)
+	{
+		for(GraphPanel graph : graphs)
+		{
+			graph.paintComponent(graphics);
+		}
 		Graphics2D drawingGraphics = (Graphics2D) graphics;
-		for (List<ShapeData> currentShapes : shapes) {
+		for (List<ShapeData> currentShapes : shapes)
+		{
 			drawShapes(currentShapes, drawingGraphics);
 		}
 	}
 
-	public void addCircles() {
-		if (circleList.size() > 100) {
+	public void addCircles()
+	{
+		if (circleList.size() > 100)
+		{
 			circleList.clear();
 		}
-		for (int index = 0; index < 30; index++) {
+		for (int index = 0; index < 30; index++)
+		{
 			int radius = (int) (Math.random() * 50) + 20;
 			int x = (int) (Math.random() * getWidth() - radius);
 			int y = (int) (Math.random() * getHeight() - radius);
@@ -102,17 +116,21 @@ public class ShapePanel extends JPanel {
 		}
 	}
 
-	public void drawLine(int startX, int startY, int endX, int endY) {
+	public void drawLine(int startX, int startY, int endX, int endY)
+	{
 		Line2D line = new Line2D.Double(new Point(startX, startY), new Point(endX, endY));
 		int rand = (int) (Math.random() * 35);
 		lineList.add(new ShapeData(line, rand % 30 == 0, (int) (Math.random() * 5) + 1));
 	}
 
-	public void addEllipse() {
-		if (ellipseList.size() > 100) {
+	public void addEllipse()
+	{
+		if (ellipseList.size() > 100)
+		{
 			ellipseList.clear();
 		}
-		for (int index = 0; index < 30; index++) {
+		for (int index = 0; index < 30; index++)
+		{
 			int radiusX = (int) (Math.random() * 50) + 20;
 			int radiusY = (int) (Math.random() * 50) + 20;
 			int x = (int) (Math.random() * getWidth() - radiusX);
@@ -123,12 +141,15 @@ public class ShapePanel extends JPanel {
 		}
 	}
 
-	public void addTriangles() {
-		if (triangleList.size() > 500) {
+	public void addTriangles()
+	{
+		if (triangleList.size() > 500)
+		{
 			triangleList.clear();
 		}
 
-		for (int index = 0; index < 30; index++) {
+		for (int index = 0; index < 30; index++)
+		{
 			int vertexCount = 3;
 			int[] xVertices = new int[vertexCount];
 			int[] yVertices = new int[vertexCount];
@@ -136,7 +157,8 @@ public class ShapePanel extends JPanel {
 			int boundHeight = (int) (Math.random() * 180) + 1;
 			int xBound = (int) (Math.random() * (getWidth() - boundWidth));
 			int yBound = (int) (Math.random() * (getHeight() - boundHeight));
-			for (int vertex = 0; vertex < vertexCount; vertex++) {
+			for (int vertex = 0; vertex < vertexCount; vertex++)
+			{
 				int xCorner = (int) (Math.random() * boundWidth) + xBound;
 				int yCorner = (int) (Math.random() * boundHeight) + yBound;
 				xVertices[vertex] = xCorner;
@@ -148,11 +170,14 @@ public class ShapePanel extends JPanel {
 		}
 	}
 
-	public void addPolygons() {
-		if (polyList.size() > 500) {
+	public void addPolygons()
+	{
+		if (polyList.size() > 500)
+		{
 			polyList.clear();
 		}
-		for (int index = 0; index < 30; index++) {
+		for (int index = 0; index < 30; index++)
+		{
 			int vertexCount = (int) (Math.random() * 7) + 4;
 			int[] xVertices = new int[vertexCount];
 			int[] yVertices = new int[vertexCount];
@@ -160,7 +185,8 @@ public class ShapePanel extends JPanel {
 			int boundHeight = (int) (Math.random() * 180) + 1;
 			int xBound = (int) (Math.random() * (getWidth() - boundWidth));
 			int yBound = (int) (Math.random() * (getHeight() - boundHeight));
-			for (int vertex = 0; vertex < vertexCount; vertex++) {
+			for (int vertex = 0; vertex < vertexCount; vertex++)
+			{
 				int xCorner = (int) (Math.random() * boundWidth) + xBound;
 				int yCorner = (int) (Math.random() * boundHeight) + yBound;
 				xVertices[vertex] = xCorner;
@@ -172,25 +198,31 @@ public class ShapePanel extends JPanel {
 		}
 	}
 
-	public void drawShapes(List<ShapeData> shapes, Graphics2D drawingGraphics) {
+	public void drawShapes(List<ShapeData> shapes, Graphics2D drawingGraphics)
+	{
 
 		drawingGraphics.setColor(inverted);
 		boolean zero = false;
-		for (int index = 0; index < shapes.size(); index++) {
-			try {
+		for (int index = 0; index < shapes.size(); index++)
+		{
+			try
+			{
 				ShapeData shape = shapes.get(index);
-				if (slowDown >= 40) {
+				if (slowDown >= 40)
+				{
 					int strokeWidth = (int) (Math.random() * 5) + 1;
 					drawingGraphics.setStroke(new BasicStroke(strokeWidth));
 					shape.setStrokeWidth(strokeWidth);
 					int rand = (int) (Math.random() * 35);
-					if (rand % 7 == 0) {
+					if (rand % 7 == 0)
+					{
 						drawingGraphics.setColor(randomizeAlpha(inverted));
 						shape.setAlpha(drawingGraphics.getColor().getAlpha());
 						drawingGraphics.fill(shape.getShape());
 						shape.setFilled(true);
 						drawingGraphics.setColor(inverted);
-					} else {
+					} else
+					{
 						drawingGraphics.draw(shape.getShape());
 						shape.setFilled(false);
 					}
@@ -198,52 +230,63 @@ public class ShapePanel extends JPanel {
 					zero = true;
 				}
 
-				else {
-					if (slowDown % 20 == 0) {
+				else
+				{
+					if (slowDown % 20 == 0)
+					{
 						shape.setStrokeWidth((int) (Math.random() * 5) + 1);
 					}
 					drawingGraphics.setStroke(new BasicStroke(shape.getStrokeWidth()));
-					if (shape.isFilled()) {
-						drawingGraphics.setColor(new Color(inverted.getRed(), inverted.getGreen(), inverted.getBlue(),
-								shape.getAlpha()));
+					if (shape.isFilled())
+					{
+						drawingGraphics.setColor(new Color(inverted.getRed(), inverted.getGreen(), inverted.getBlue(), shape.getAlpha()));
 						drawingGraphics.fill(shape.getShape());
 						drawingGraphics.setColor(inverted);
-					} else {
+					} else
+					{
 						drawingGraphics.draw(shape.getShape());
 					}
 
-					
 				}
 
 			}
 
-			catch (ConcurrentModificationException e) {
-				try {
+			catch (ConcurrentModificationException e)
+			{
+				try
+				{
 					Thread.sleep(1);
 					index--;
-				} catch (InterruptedException e1) {
+				} catch (InterruptedException e1)
+				{
 					e1.printStackTrace();
 				}
 			}
 		}
 		slowDown++;
-		if(zero)
+		if (zero)
 		{
-			slowDown =0;
+			slowDown = 0;
 		}
 	}
 
-	private Color randomizeAlpha(Color color) {
+	private Color randomizeAlpha(Color color)
+	{
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (Math.random() * 256));
 	}
 
-	public void clear() {
-		for (List<ShapeData> removeMe : shapes) {
+	public void clear()
+	{
+		for (List<ShapeData> removeMe : shapes)
+		{
 			removeMe.clear();
 		}
+		GraphPanel graph = new GraphPanel (null, this);
+		graphs.add(graph);
 	}
 
-	public void setBackground(Color color) {
+	public void setBackground(Color color)
+	{
 		super.setBackground(color);
 		int red = 255 - color.getRed();
 		int green = 255 - color.getGreen();
@@ -251,98 +294,119 @@ public class ShapePanel extends JPanel {
 		inverted = new Color(red, green, blue);
 	}
 
-	public void stopTheGifFriend() {
+	public void stopTheGifFriend()
+	{
 		capture = false;
 	}
 
-	public void makeDankGifFriend() {
+	public void makeDankGifFriend()
+	{
 		ConcurrentLinkedQueue<BufferedImage> framesToSave = new ConcurrentLinkedQueue<BufferedImage>();
 		capture = true;
-		Thread giffy = new Thread() {
-			public void run() {
-				try {
+		Thread giffy = new Thread()
+		{
+			public void run()
+			{
+				try
+				{
 					JOptionPane.showMessageDialog(null, "Press ok to save");
-					int time;
-					try{
-					time = Integer.parseInt(JOptionPane.showInputDialog(null,"Enter miliSecond capture time"));}
-					catch(Exception e)
+					int targetTime;
+					int max = 0;
+					int size = 0;
+					try
 					{
-						time = 500;
+						targetTime = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter miliSecond capture time"));
+					} catch (Exception e)
+					{
+						targetTime = 500;
 					}
-							while (capture) {
-						Thread.sleep(time)
-						;
-						
-						Thread capture = new Thread() {
-							public void run() {
-								try{
-								BufferedImage image = new BufferedImage(getWidth(), getHeight(),
-										BufferedImage.TYPE_INT_ARGB);
-								Graphics graphic = image.getGraphics();
-								graphic.setColor(getBackground());
-								graphic.fillRect(0, 0, getWidth(), getHeight());
-								print(graphic);
-								graphic.dispose();
-								framesToSave.add(image);}
-							catch(java.lang.OutOfMemoryError e)
+
+					int time = targetTime;
+
+					boolean times2 = false;
+					while (capture)
+					{
+						Thread.sleep(time);
+
+						Thread capture = new Thread()
+						{
+							public void run()
 							{
-								memClear = true;
-							}
+								try
+								{
+									BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+									Graphics graphic = image.getGraphics();
+									graphic.setColor(getBackground());
+									graphic.fillRect(0, 0, getWidth(), getHeight());
+									print(graphic);
+									graphic.dispose();
+									framesToSave.add(image);
+								} catch (java.lang.OutOfMemoryError e)
+								{
+									memClear = true;
+								}
 							}
 
 						};
-						if(!memClear) {
+						if (time > targetTime && framesToSave.size() <= max / 2)
+						{
+							time = time / 2;
+						}
+						if (!memClear)
+						{
 							capture.start();
-						} else{
-							System.out.println("MemError");
-							int reqired = framesToSave.size()/2;
-							while(framesToSave.size()>reqired)
-							{
-							try {
-								Thread.sleep(2000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							}
+						} else
+						{
 							memClear = false;
-							capture.start();
+							max = framesToSave.size();
+							time = time * 2;
+							Thread.sleep(time);
 						}
 					}
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e)
+				{
 					JOptionPane.showMessageDialog(null, "Saving Error");
 					e.printStackTrace();
 				}
 
 			}
 		};
-		Thread writeToFile = new Thread() {
-			public void run() {
+		Thread writeToFile = new Thread()
+		{
+			public void run()
+			{
 				File newFile = new File(JOptionPane.showInputDialog("enter file name") + ".gif");
 
 				ImageOutputStream output;
-				try {
+				try
+				{
 					output = new FileImageOutputStream(newFile);
 					GifSequenceWriter gif = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, 1, true);
 
 					giffy.start();
-					while (giffy.isAlive() || framesToSave.size() > 0) {
-						if (framesToSave.size() > 0) {
+					while (giffy.isAlive() || framesToSave.size() > 0)
+					{
+						if (framesToSave.size() > 0)
+						{
 							gif.writeToSequence(framesToSave.remove());
 							System.out.println("Size: " + framesToSave.size());
-						} else {
-							Thread.sleep(200);
+						} else
+						{
+							Thread.sleep(100);
 						}
 					}
 
 					gif.close();
 					output.close();
 					JOptionPane.showMessageDialog(null, "Done");
-				} catch (IOException e) {
+				} catch (IOException e)
+				{
 
 					JOptionPane.showMessageDialog(null, "Saving Error");
 					capture = false;
 					e.printStackTrace();
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e)
+				{
 
 					JOptionPane.showMessageDialog(null, "Saving Error");
 					capture = false;
@@ -352,8 +416,12 @@ public class ShapePanel extends JPanel {
 		};
 		writeToFile.start();
 	}
-
-	public boolean isCapturing() {
+	public Color getInverted()
+	{
+		return inverted;
+	}
+	public boolean isCapturing()
+	{
 		return capture;
 	}
 }
